@@ -1,0 +1,32 @@
+/*Style menu*/
+
+#Logo {
+    width : 100px;
+    height : 130px;
+
+}
+
+nav {
+    display: flex;
+    background-color: #D9CA2A;
+    height: 130px;
+    }
+
+#menu {
+    display:flex;
+}
+
+ul {
+    display: flex;
+    align-items: center;
+    list-style:none;
+}
+
+li a {
+    padding: 60px;
+    font-size: large;
+    font-family: 'Courier New', Courier, monospace;
+    color: #000;
+    text-decoration: none;
+}
+
