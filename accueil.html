@@ -35,10 +35,12 @@
     </main>
     <script>
         // Fonction pour récupérer les films via fetch
-        function loadFilms() {
+        //function loadFilms() {
             fetch('/film')
                 .then(response => response.json())
                 .then(films => {
+                    console.log("Je suis là");
+                    console.log("titre=",films.titre);
                     const filmsTable = document.getElementById('films-table');
                     films.forEach(film => {
                         const row = filmsTable.insertRow();
@@ -53,10 +55,10 @@
                     });
                 })
                 .catch(error => console.error('Erreur:', error));
-        }
+        //}
 
         // Charger les films au chargement de la page
-        window.onload = loadFilms;
+        //window.onload = loadFilms;
     </script>
 </body>
 </html>
