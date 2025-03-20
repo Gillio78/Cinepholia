@@ -42,6 +42,7 @@ function loadFilms(callback) {
         }
         console.log("Films récupérés depuis la base de données :", results);
         //callback(null, results);
+        callback(null, results.map(row => ({ titre: row.titre })));
     });
 }
 
@@ -63,5 +64,5 @@ app.get('/film', (req, res) => {
 
 // Démarre le serveur
 app.listen(port, () => {
-    console.log(Serveur démarré sur http://localhost:${port});
+    console.log('Serveur démarré sur http://localhost:${port}');
 });
