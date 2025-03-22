@@ -22,8 +22,17 @@ ul {
     list-style:none;
 }
 
-li a {
+ li a {
     padding: 60px;
+    font-size: large;
+    font-family: 'Courier New', Courier, monospace;
+    color: #000;
+    text-decoration: none;
+}
+
+footer {
+    padding: 60px;
+    background-color: #D9CA2A;
     font-size: large;
     font-family: 'Courier New', Courier, monospace;
     color: #000;
