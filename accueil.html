@@ -45,13 +45,13 @@
                     films.forEach(film => {
                         const row = filmsTable.insertRow();
                         const cell1 = row.insertCell(0);
-                        /*const cell2 = row.insertCell(1);*/
+                        const cell2 = row.insertCell(1);
                         cell1.textContent = film.titre;
-                        /*const img = document.createElement('img');
+                        const img = document.createElement('img');
                         img.src = 'data:image/jpeg;base64,' + film.affiche;
                         img.alt = 'Affiche du film';
                         img.width = 100;
-                        cell2.appendChild(img);*/
+                        cell2.appendChild(img);
                     });
                 })
                 .catch(error => console.error('Erreur:', error));

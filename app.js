@@ -35,14 +35,17 @@ db.connect((err) => {
 
 // Fonction pour récupérer les films :
 function loadFilms(callback) {
-    const sql = 'SELECT titre FROM film';
+    const sql = 'SELECT titre, TO_BASE64(affiche) AS affiche FROM film';//'SELECT titre, affiche FROM film';
     db.query(sql, (err, results) => {
         if (err) {
             return callback(err, null);
         }
         console.log("Films récupérés depuis la base de données :", results);
         //callback(null, results);
-        callback(null, results.map(row => ({ titre: row.titre })));
+        //callback(null, results.map(row => ({ titre: row.titre })));
+        callback(null, results.map(row => ({
+            titre: row.titre,
+            affiche: row.affiche,})))
     });
 }
 
