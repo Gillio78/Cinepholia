@@ -53,6 +53,25 @@
     })
     .catch(error => console.error('Erreur lors de la récupération des cinémas :', error));
 
+    fetch('/getFilmIds')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Erreur HTTP : ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(films => {
+        console.log('Films récupérés pour le menu déroulant :', films);
+        const dropdown = document.getElementById('film');
+        films.forEach(film => {
+            const option = document.createElement('option');
+            option.value = film.id_film; // Affiche l'ID
+            option.textContent = `${film.id_film}`; // Texte affiché
+            dropdown.appendChild(option);
+        });
+    })
+    .catch(error => console.error('Erreur lors de la récupération des IDs des films :', error));
+
     </script>
     
 </body>

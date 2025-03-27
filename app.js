@@ -58,6 +58,25 @@ app.get('/getCinemas', (req, res) => {
     });
 });
 
+//Route pour récupérer les films du menu
+app.get('/getFilmIds', (req, res) => {
+    console.log('Requête reçue sur /getFilmIds'); // Log pour vérifier que la route est appelée
+    const query = `
+        SELECT film AS id_film 
+        FROM films_projetes
+    `;
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Erreur lors de la récupération des IDs des films :', err);
+            res.status(500).send('Erreur serveur lors de la récupération des IDs des films.');
+            return;
+        }
+        console.log('Films récupérés :', results); // Vérifie les résultats obtenus
+        res.json(results); // Renvoie les résultats
+    });
+});
+
+
 // Démarre le serveur
 app.listen(port, () => {
     console.log(`Serveur démarré sur http://localhost:${port}`);
