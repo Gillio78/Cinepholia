@@ -12,14 +12,11 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '.', 'accueil.html'));
 });
 
-// Middleware pour servir les fichiers statiques
-app.use(express.static('public'));
-
 // Configuration de la connexion à la base de données
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'SQL24!', // mot de passe
+    password: 'SQL24!',
     database: 'cinepholia',
     port: 3306
 });
@@ -27,45 +24,41 @@ const db = mysql.createConnection({
 // Connexion à la base de données
 db.connect((err) => {
     if (err) {
-        console.error('La connexion a échoué : ' + err.stack);
+        console.error('La connexion a échoué :', err);
         return;
     }
     console.log('Connecté à la base de données.');
 });
 
-// Fonction pour récupérer les films :
-function loadFilms(callback) {
-    const sql = 'SELECT titre, TO_BASE64(affiche) AS affiche FROM film';//'SELECT titre, affiche FROM film';
+// Route pour récupérer les films
+app.get('/film', (req, res) => {
+    const sql = 'SELECT titre, TO_BASE64(affiche) AS affiche FROM film';
     db.query(sql, (err, results) => {
         if (err) {
-            return callback(err, null);
+            console.error('Erreur dans /film :', err);
+            res.status(500).send('Erreur lors de la récupération des films.');
+            return;
         }
-        console.log("Films récupérés depuis la base de données :", results);
-        //callback(null, results);
-        //callback(null, results.map(row => ({ titre: row.titre })));
-        callback(null, results.map(row => ({
-            titre: row.titre,
-            affiche: row.affiche,})))
-    });
-}
-
-
-// Route pour récupérer et envoyer les films en JSON
-app.get('/film', (req, res) => {
-    console.log("Requête reçue sur /film"); // Vérifie si la route est appelée
-    loadFilms((err, films) => {
-        if (err) {
-            console.error("Erreur dans /film :", err);
-            return res.status(500).send('Erreur lors de la récupération des films.');
-        }
-        console.log("Films récupérés et envoyés au client :", films); // Affiche les films avant envoi
-        res.json(films);
+        console.log("Films récupérés :", results);
+        res.json(results); // Retourne les films au client
     });
 });
 
-
+// Route pour récupérer les cinémas
+app.get('/getCinemas', (req, res) => {
+    const query = 'SELECT Nom AS nom FROM cinema';
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Erreur dans /getCinemas :', err);
+            res.status(500).send('Erreur lors de la récupération des cinémas.');
+            return;
+        }
+        console.log("Cinémas récupérés :", results);
+        res.json(results);
+    });
+});
 
 // Démarre le serveur
 app.listen(port, () => {
-    console.log('Serveur démarré sur http://localhost:${port}');
+    console.log(`Serveur démarré sur http://localhost:${port}`);
 });

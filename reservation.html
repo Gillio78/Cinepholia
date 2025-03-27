@@ -22,12 +22,38 @@
     </header>
     <main>
         <h1>Réservation</h1>
+        <h2>Choix du cinéma :</h2>
+        <form>
+            <select id="cinema" name="cinema">
+            </select>
+        </form><br><br>
+        <h2>Choix du film :</h2>
+        <form>
+            <select id="film" name="film">
+            </select>
+        </form><br><br>
+        <button id="validation">Valider le choix du film</button><br><br>
     </main>
     <footer>
         <p> Adresse : 10, Impasse de l'écran noir 75009 Paris</p>
         <p>Téléphone : 06.xx.xx.xx.09</p>
         <p>Horaires : Toute la semaine de 14H00 à 23H00.</p>
     </footer>
+
+    <script>
+       fetch('/getCinemas')
+    .then(response => response.json())
+    .then(cinemas => {
+        const dropdown = document.getElementById('cinema'); // ID du menu déroulant
+        cinemas.forEach(cinema => {
+            const option = document.createElement('option');
+            option.textContent = cinema.nom; // Affiche uniquement le nom du cinéma
+            dropdown.appendChild(option);
+        });
+    })
+    .catch(error => console.error('Erreur lors de la récupération des cinémas :', error));
+
+    </script>
     
 </body>
 </html>
