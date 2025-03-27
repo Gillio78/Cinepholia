@@ -1,0 +1,3 @@
+Code restant à intégrer dans les requêtes SQL :
+
+WHILE @jour_id <= @nombre_jours DO WHILE @film_id <= @nombre_films DO -- Récupération de la durée du film SET @duree_seance = ( SELECT duree FROM film WHERE id = @film_id ); -- Ajout de la première séance pour le film courant INSERT INTO seances (jour_id, film_id, horaire) VALUES (@jour_id, @film_id, @current_horaire); -- Calcul du prochain horaire en fonction de la durée du film et de la pause SET @current_horaire = ADDTIME(@current_horaire, SEC_TO_TIME(@duree_seance * 60 + @pause * 60)); -- Vérification de la limite horaire IF @current_horaire > @horaire_limite THEN BREAK; -- Sort de la boucle des films pour le jour courant END IF;

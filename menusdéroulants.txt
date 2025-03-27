@@ -1,0 +1,67 @@
+Menus déroulants :
+
+le script de la page HTML contenant les 2 listes déroulantes :
+	<script>
+        var id_client;
+		// Requête AJAX pour récupérer les options des listes déroulantes
+        fetch('/getClients')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('dropdown-container_clients').innerHTML = data;
+            })
+            .catch(error => console.error('Error fetching options:', error));
+		
+		document.getElementById('dropdown-container_clients').addEventListener('change', function() {
+			id_client =document.querySelector('#dropdown-container_clients select').value;
+			console.log("id_client=",id_client);
+			// Requête AJAX pour récupérer les options des listes déroulantes
+			fetch('/getDossiers_client', {
+                method: 'POST',
+				headers: {
+                    'Content-Type': 'application/json'
+                },
+				body: JSON.stringify({
+       et le code node.js pour les 2 requêtes :
+app.get('/getClients', (req, res) => {
+    const sql = SELECT id_client,client FROM clients;
+    var options='';
+	
+	db.query(sql, (err, results) => {
+        if (err) throw err;
+        options = '<select aria-labelledby="dropdown-container_clients">';
+        results.forEach(row => {
+            options += <option value="${row.id_client}">${row.client}</option>;
+        });
+        options += '</select>';
+
+        res.send(options);
+    });
+});
+
+// Route pour récupérer les options de la liste déroulante
+app.post('/getDossiers_client', (req, res) => {
+    let id_client = req.body.id_client;
+	let sql = SELECT id_dossier,nom FROM dossiers WHERE statut="en cours" and id_client=?;
+	db.query(sql,[id_client], (err, results) => {
+        if (err) throw err;
+       let options = '<select aria-labelledby="dropdown-container_dossiers" size="5">';
+        results.forEach(row => {
+            options += <option value="${row.id_dossier}">${row.nom}</option>;
+        });
+        options += '</select>';
+
+        res.send(options);
+    });
+});             id_client: id_client,
+                })
+            })
+ 				.then(response => response.text())
+				.then(data => {
+					document.getElementById('dropdown-container_dossiers').innerHTML = data;
+				})
+				.catch(error => console.error('Error fetching options:', error));
+			
+        });
+
+
+

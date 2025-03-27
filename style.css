@@ -1,4 +1,7 @@
 /*Style menu*/
+main {
+    padding-left: 10vh;
+}
 
 #Logo {
     width : 100px;
@@ -14,6 +17,15 @@ nav {
 
 #menu {
     display:flex;
+}
+
+#validation {
+    background-color: #8AB9B5;
+    border-style: none;
+    border-radius: 25px;
+    color: #FDFDFD;
+    font-size: 20px;
+    padding: 20px;
 }
 
 ul {

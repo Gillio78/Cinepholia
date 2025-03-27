@@ -24,7 +24,7 @@
         <h1>Bienvenue au cinéma Cinépholia</h1>
         <h2>Présentation du cinéma.</h2>
         <p>Notre cinéma comporte deux salles.</p>
-        <p>Il vous est possible de <a href="reservation.html">réserver vos places</a> pour le <a href="films.html">film</a> de votre choix dans l'une de nos deux salles.</p>
+        <p>Il vous est possible de <a href="reservation.html">réserver vos places</a> pour le <a href="films.html">film</a> de votre choix dans l'une de salles de nos deux cinémas.</p>
         <h2>Films de la semaine</h2>
         <table id="films-table">
             <tr>
@@ -41,7 +41,6 @@
     </body>
     <script>
         // Fonction pour récupérer les films via fetch
-        //function loadFilms() {
             fetch('/film')
                 .then(response => response.json())
                 .then(films => {
@@ -61,10 +60,6 @@
                     });
                 })
                 .catch(error => console.error('Erreur:', error));
-        //}
-
-        // Charger les films au chargement de la page
-        //window.onload = loadFilms;
     </script>
 </body>
 </html>
