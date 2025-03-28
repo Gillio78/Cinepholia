@@ -65,8 +65,8 @@
         const dropdown = document.getElementById('film');
         films.forEach(film => {
             const option = document.createElement('option');
-            option.value = film.id_film; // Affiche l'ID
-            option.textContent = `${film.id_film}`; // Texte affiché
+            option.value = film.titre; // Affiche l'ID
+            option.textContent = `${film.titre}`; // Texte affiché
             dropdown.appendChild(option);
         });
     })

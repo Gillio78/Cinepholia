@@ -62,8 +62,10 @@ app.get('/getCinemas', (req, res) => {
 app.get('/getFilmIds', (req, res) => {
     console.log('Requête reçue sur /getFilmIds'); // Log pour vérifier que la route est appelée
     const query = `
-        SELECT film AS id_film 
+        SELECT film.titre 
         FROM films_projetes
+        INNER JOIN film ON films_projetes.film = film.id;
+
     `;
     db.query(query, (err, results) => {
         if (err) {
