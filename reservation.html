@@ -50,6 +50,13 @@
             option.textContent = cinema.nom; // Affiche uniquement le nom du cinéma
             dropdown.appendChild(option);
         });
+
+        // Ajout du gestionnaire d'événements pour le menu déroulant
+document.getElementById('cinema').addEventListener('change', (event) => {
+    const selectedCinema = event.target.value; // Récupère la valeur sélectionnée
+    console.log(`Cinéma sélectionné : ${selectedCinema}`); // Affiche dans la console
+});
+
     })
     .catch(error => console.error('Erreur lors de la récupération des cinémas :', error));
 
@@ -65,13 +72,15 @@
         const dropdown = document.getElementById('film');
         films.forEach(film => {
             const option = document.createElement('option');
-            option.value = film.titre; // Affiche l'ID
+            option.value = film.titre; // Affiche le titre
             option.textContent = `${film.titre}`; // Texte affiché
             dropdown.appendChild(option);
         });
     })
     .catch(error => console.error('Erreur lors de la récupération des IDs des films :', error));
 
+
+    
     </script>
     
 </body>
