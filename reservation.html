@@ -24,12 +24,12 @@
         <h1>Réservation</h1>
         <h2>Choix du cinéma :</h2>
         <form>
-            <select id="cinema" name="cinema">
+            <select id="cinema">
             </select>
         </form><br><br>
         <h2>Choix du film :</h2>
         <form>
-            <select id="film" name="film">
+            <select id="film">
             </select>
         </form><br><br>
         <button id="validation">Valider le choix du film</button><br><br>
@@ -47,7 +47,7 @@
         const dropdown = document.getElementById('cinema'); // ID du menu déroulant
         cinemas.forEach(cinema => {
             const option = document.createElement('option');
-            option.textContent = cinema.nom; // Affiche uniquement le nom du cinéma
+            option.textContent = cinema.nom_cinema; // Affiche uniquement le nom du cinéma
             dropdown.appendChild(option);
         });
 
@@ -60,24 +60,46 @@ document.getElementById('cinema').addEventListener('change', (event) => {
     })
     .catch(error => console.error('Erreur lors de la récupération des cinémas :', error));
 
-    fetch('/getFilmIds')
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`Erreur HTTP : ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(films => {
-        console.log('Films récupérés pour le menu déroulant :', films);
-        const dropdown = document.getElementById('film');
-        films.forEach(film => {
-            const option = document.createElement('option');
-            option.value = film.titre; // Affiche le titre
-            option.textContent = `${film.titre}`; // Texte affiché
-            dropdown.appendChild(option);
+    //Récupère le clic du cinéma
+    document.getElementById('cinema').addEventListener('change', (event) => {
+    const selectedCinema = event.target.value; // Récupère le cinéma sélectionné
+    console.log(`Cinéma sélectionné : ${selectedCinema}`); // Vérifie la valeur dans la console
+
+    // Requête pour récupérer les films du cinéma sélectionné
+    fetch(`/getFilmsByCinema?cinema=${encodeURIComponent(selectedCinema)}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Erreur HTTP : ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(films => {
+            console.log(`Films récupérés pour le cinéma ${selectedCinema} :`, films);
+            const filmDropdown = document.getElementById('film');
+            filmDropdown.innerHTML = ''; // Vide le menu déroulant avant de le remplir
+            films.forEach(film => {
+                const option = document.createElement('option');
+                option.value = film.titre;
+                option.textContent = film.titre; // Affiche le titre dans le menu déroulant
+                filmDropdown.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Erreur lors de la récupération des films :', error));
+});
+
+//Click sur le bouton validatiion
+
+document.getElementById('validation').addEventListener('click', () => {
+            const selectedFilm = document.getElementById('film').value;
+            if (selectedFilm) {
+        // Inclut le film sélectionné dans l'URL
+        window.location.href = `resa_seance.html?film=${encodeURIComponent(selectedFilm)}`;
+    }  else {
+                alert('Veuillez sélectionner un film.');
+            }
         });
-    })
-    .catch(error => console.error('Erreur lors de la récupération des IDs des films :', error));
+
+
 
 
     

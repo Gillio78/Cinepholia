@@ -46,7 +46,7 @@ app.get('/film', (req, res) => {
 
 // Route pour récupérer les cinémas
 app.get('/getCinemas', (req, res) => {
-    const query = 'SELECT Nom AS nom FROM cinema';
+    const query = 'SELECT nom_cinema  FROM cinema';
     db.query(query, (err, results) => {
         if (err) {
             console.error('Erreur dans /getCinemas :', err);
@@ -59,15 +59,24 @@ app.get('/getCinemas', (req, res) => {
 });
 
 //Route pour récupérer les films du menu
-app.get('/getFilmIds', (req, res) => {
-    console.log('Requête reçue sur /getFilmIds'); // Log pour vérifier que la route est appelée
+
+app.get('/getFilmsByCinema', (req, res) => {
+    const cinema  = req.query.cinema;
+    //const cinema = req.body.cinema;
+    console.log('cinema=',req);
+    console.log('Requête reçue sur /getFilmsByCinema'); // Log pour vérifier que la route est appelée
     const query = `
         SELECT DISTINCT film.titre 
-FROM films_projetes
-INNER JOIN film ON films_projetes.film = film.id;
-
-    `;
-    db.query(query, (err, results) => {
+        FROM film
+        WHERE id_film=(
+        SELECT id_film
+        FROM films_projetes
+        WHERE id_cinema=(
+        SELECT id_cinema
+        FROM cinema
+        WHERE nom_cinema=?))
+ `;
+    db.query(query,[cinema], (err, results) => {
         if (err) {
             console.error('Erreur lors de la récupération des IDs des films :', err);
             res.status(500).send('Erreur serveur lors de la récupération des IDs des films.');
