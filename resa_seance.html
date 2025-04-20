@@ -49,14 +49,46 @@ if (selectedFilm) {
     document.getElementById('messageSeance').textContent = 'Aucun film sélectionné.';
 }
 
-/*// Récupérez les paramètres de l'URL
-const urlParams = new URLSearchParams(window.location.search);
-const selectedFilm = urlParams.get('film');
+// Initialisez une constante pour les jours récupérés
+let jours = [];
 
-        // Créez le message
-const message = `Veuillez sélectionner la séance pour le film ${selectedFilm}`;
+// Envoyer une requête GET pour récupérer les jours de la semaine
+fetch('http://localhost:3001/joursSemaineAbreges')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erreur lors de la récupération des jours de la semaine.');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Jours récupérés :', data); // Vérifiez les résultats dans la console
 
-// Affichez le message dans l'élément HTML avec l'ID "messageSeance"
-document.getElementById('messageSeance').textContent = message;*/
+        // Paramétrez la constante jours avec les données récupérées
+        jours = data.map(jour => jour.jour_abrege); // Extraire les abréviations des jours
+        console.log('Constante jours paramétrée :', jours);
+
+        // Ajoutez les jours au HTML
+        const jourContainer = document.getElementById('jourSemaine');
+        jours.forEach(jour => {
+            const p = document.createElement('p');
+            p.textContent = jour; // Affiche les abréviations des jours
+            jourContainer.appendChild(p);
+        });
+
+        // Marquez le jour correspondant à la date actuelle
+        const dateActuelle = new Date();
+        const jourIndex = dateActuelle.getDay(); // Obtenez l'index du jour actuel (0 = Dim, 1 = Lun, etc.)
+        if (jours[jourIndex]) {
+            // Trouvez l'élément correspondant au jour actuel
+            const jourActuel = Array.from(jourContainer.children).find(p => p.textContent === jours[jourIndex]);
+            if (jourActuel) {
+                jourActuel.classList.add('jourActuel'); // Ajoutez la classe CSS pour le jour actuel
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Erreur :', error);
+    });
+
 
     </script>

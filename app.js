@@ -87,6 +87,25 @@ app.get('/getFilmsByCinema', (req, res) => {
     });
 });
 
+app.get('/joursSemaineAbreges', (req, res) => {
+    console.log('La route a bien été appelée depuis XAMPP ou une autre requête.');
+    const query = `
+        SELECT LEFT(Jour, 3) AS jour_abrege
+        FROM jours;
+    `;
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Erreur dans la récupération des jours :', err);
+            res.status(500).send('Erreur serveur.');
+            return;
+        }
+        console.log('Résultats renvoyés :', results);
+        
+        res.json(results);
+    });
+});
+
+
 
 // Démarre le serveur
 app.listen(port, () => {
