@@ -50,29 +50,17 @@ footer {
     color: #000;
     text-decoration: none;
 }
-
-/* Style pour les jours affichés en ligne */
-#jourSemaine {
-    display: flex;
-    justify-content: center; 
-    gap: 10px; 
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
 }
-
-#jourSemaine p {
-    margin: 0; 
-    padding: 5px 10px; 
-    background-color: #360b0b; 
-    border: 1px solid #ccc; 
-    font-family: Arial, sans-serif; 
-    font-size: 20px;
-    color: #dfd9d9; 
+th {
+    background-color: #f4f4f4;
+    padding: 10px;
+    border: 1px solid #ddd;
 }
-
-/* Style pour le jour correspondant à la date du jour */
 .jourActuel {
-    background-color: blue;
-    color: red; 
-    font-weight: bold; 
+    background-color: #ffeb3b; /* Mettre en avant le jour actuel */
+    font-weight: bold;
 }
-
-

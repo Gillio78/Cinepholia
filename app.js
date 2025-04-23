@@ -87,6 +87,7 @@ app.get('/getFilmsByCinema', (req, res) => {
     });
 });
 
+//Route pour récupérer les jours de la semaine
 app.get('/joursSemaineAbreges', (req, res) => {
     console.log('La route a bien été appelée depuis XAMPP ou une autre requête.');
     const query = `
