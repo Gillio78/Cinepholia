@@ -135,7 +135,7 @@ fetch('http://localhost:3001/joursSemaineAbreges')
     })
     .catch(error => console.error('Erreur:', error));*/
 
-    fetch('http://localhost:3001/joursSemaineAbreges')
+    /*fetch('http://localhost:3001/joursSemaineAbreges')
     .then(response => {
         if (!response.ok) {
             throw new Error('Erreur lors de la récupération des jours de la semaine.');
@@ -169,7 +169,42 @@ fetch('http://localhost:3001/joursSemaineAbreges')
             });
         }
     })
+    .catch(error => console.error('Erreur:', error));*/
+
+    fetch('http://localhost:3001/joursSemaineAbreges')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erreur lors de la récupération des jours de la semaine.');
+        }
+        return response.json();
+    })
+    .then(data => {
+        const jours = data.map(jour => jour.jour_abrege); // Récupérer les abréviations des jours
+        const headerRow = document.getElementById('joursEnTete');
+
+        jours.forEach(jour => {
+            const headerCell = document.createElement('th');
+            headerCell.textContent = jour;
+            headerRow.appendChild(headerCell);
+        });
+
+        // Ajustez l'indice pour correspondre au format de votre table
+        const dateActuelle = new Date();
+        let jourIndex = dateActuelle.getDay(); // Obtenir l'indice selon JavaScript
+        jourIndex = jourIndex - 3; // Transformez pour que Lundi = 0, Mardi = 1, etc.
+
+        const jourActuel = jours[jourIndex];
+
+        if (jourActuel) {
+            Array.from(headerRow.children).forEach(cell => {
+                if (cell.textContent === jourActuel) {
+                    cell.classList.add('jourActuel'); // Ajouter un style au jour actuel
+                }
+            });
+        }
+    })
     .catch(error => console.error('Erreur:', error));
+
 
 
 
