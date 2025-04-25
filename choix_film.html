@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinephoria</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav id="menu">
+            <a href="accueil.html">
+                <img id="Logo" src="Photos/Cinépholia.jpg" alt="Cinépholia">
+            </a>
+            <ul>
+                <li class="titre"><a href="connexion.html">Connexion</a></li>
+                <li class="titre"><a href="choix_film.html">Réservation</a></li>
+                <li class="titre"><a href="films.html">Films</a></li>
+                <li class="titre"><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h1>Réservation</h1>
+        <h2>Choix du cinéma :</h2>
+        <form>
+            <select id="cinema">
+            </select>
+        </form><br><br>
+        <h2>Choix du film :</h2>
+        <form>
+            <select id="film">
+            </select>
+        </form><br><br>
+        <button id="validation">Valider le choix du film</button><br><br>
+    </main>
+    <footer>
+        <p> Adresse : 10, Impasse de l'écran noir 75009 Paris</p>
+        <p>Téléphone : 06.xx.xx.xx.09</p>
+        <p>Horaires : Toute la semaine de 14H00 à 23H00.</p>
+    </footer>
+
+    <script>
+       fetch('/getCinemas')
+    .then(response => response.json())
+    .then(cinemas => {
+        const dropdown = document.getElementById('cinema'); // ID du menu déroulant
+        cinemas.forEach(cinema => {
+            const option = document.createElement('option');
+            option.textContent = cinema.nom_cinema; // Affiche uniquement le nom du cinéma
+            dropdown.appendChild(option);
+        });
+
+       
+    })
+    .catch(error => console.error('Erreur lors de la récupération des cinémas :', error));
+
+    //Récupère le clic du cinéma
+    document.getElementById('cinema').addEventListener('click', (event) => {
+    const selectedCinema = event.target.value; // Récupère le cinéma sélectionné
+    console.log(`Cinéma sélectionné : ${selectedCinema}`); // Vérifie la valeur dans la console
+
+    // Requête pour récupérer les films du cinéma sélectionné
+    fetch(`/getFilmsByCinema?cinema=${encodeURIComponent(selectedCinema)}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Erreur HTTP : ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(films => {
+            console.log(`Films récupérés pour le cinéma ${selectedCinema} :`, films);
+            const filmDropdown = document.getElementById('film');
+            filmDropdown.innerHTML = ''; // Vide le menu déroulant avant de le remplir
+            films.forEach(film => {
+                const option = document.createElement('option');
+                option.value = film.titre;
+                option.textContent = film.titre; // Affiche le titre dans le menu déroulant
+                filmDropdown.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Erreur lors de la récupération des films :', error));
+});
+
+//Click sur le bouton validatiion
+
+document.getElementById('validation').addEventListener('click', () => {
+            const selectedFilm = document.getElementById('film').value;
+            if (selectedFilm) {
+        // Inclut le film sélectionné dans l'URL
+        window.location.href = `choix_seance.html?film=${encodeURIComponent(selectedFilm)}`;
+    }  else {
+                alert('Veuillez sélectionner un film.');
+            }
+        });
+
+
+
+
+    
+    </script>
+    
+</body>
+</html>
+
+

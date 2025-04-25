@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinépholia</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav id="menu">
+            <a href="accueil.html">
+                <img id="Logo" src="Photos/Cinépholia.jpg" alt="Cinépholia">
+            </a>
+            <ul>
+                <li class="titre"><a href="connexion.html">Connexion</a></li>
+                <li class="titre"><a href="choix_film.html">Réservation</a></li>
+                <li class="titre"><a href="films.html">Films</a></li>
+                <li class="titre"><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h1>Réservation de la séance :</h1><br><br>
+        <p id="messageSeance"></p><br><br>
+        <p>Choisissez la séance :</p><br><br>
+        <p id="jourSemaine"></p>
+        <table>
+            <thead>
+                <tr id="joursEnTete">
+                    <!-- Les jours récupérés seront insérés ici -->
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Ajoutez du contenu ici si nécessaire -->
+            </tbody>
+        </table>
+        
+
+
+
+    </main>
+    <footer>
+        <p> Adresse : 10, Impasse de l'écran noir 75009 Paris</p>
+        <p>Téléphone : 06.xx.xx.xx.09</p>
+        <p>Horaires : Toute la semaine de 14H00 à 23H00.</p>
+    </footer>
+    </body>
+    <script>
+
+        // Récupérez les paramètres de l'URL
+const urlParams = new URLSearchParams(window.location.search);
+const selectedFilm = urlParams.get('film');
+
+if (selectedFilm) {
+    // Créez un message avec le film sélectionné
+    const message = `Veuillez sélectionner la séance pour le film ${selectedFilm}.`;
+    document.getElementById('messageSeance').textContent = message;
+} else {
+    document.getElementById('messageSeance').textContent = 'Aucun film sélectionné.';
+}
+
+// Initialisez une constante pour les jours récupérés
+let jours = [];
+
+
+
+    fetch('http://localhost:3001/joursSemaineAbreges')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erreur lors de la récupération des jours de la semaine.');
+        }
+        return response.json();
+    })
+    .then(data => {
+        const jours = data.map(jour => jour.jour_abrege); // Récupérer les abréviations des jours
+        const headerRow = document.getElementById('joursEnTete');
+
+        jours.forEach(jour => {
+            const headerCell = document.createElement('th');
+            headerCell.textContent = jour;
+            headerRow.appendChild(headerCell);
+        });
+
+        // Ajustez l'indice pour correspondre au format de votre table
+        const dateActuelle = new Date();
+        let jourIndex = dateActuelle.getDay(); // Obtenir l'indice selon JavaScript
+        jourIndex = jourIndex - 3; // Transformez pour que Lundi = 0, Mardi = 1, etc.
+
+        const jourActuel = jours[jourIndex];
+
+        if (jourActuel) {
+            Array.from(headerRow.children).forEach(cell => {
+                if (cell.textContent === jourActuel) {
+                    cell.classList.add('jourActuel'); // Ajouter un style au jour actuel
+                }
+            });
+        }
+    })
+    .catch(error => console.error('Erreur:', error));
+
+
+
+
+
+    </script>
