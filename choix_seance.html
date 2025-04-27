@@ -32,9 +32,10 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Ajoutez du contenu ici si nécessaire -->
+                <!--Les horaires sont affichées ici-->
             </tbody>
         </table>
+      
         
 
 
@@ -85,7 +86,7 @@ let jours = [];
         // Ajustez l'indice pour correspondre au format de votre table
         const dateActuelle = new Date();
         let jourIndex = dateActuelle.getDay(); // Obtenir l'indice selon JavaScript
-        jourIndex = jourIndex - 3; // Transformez pour que Lundi = 0, Mardi = 1, etc.
+        jourIndex = (jourIndex - 3 + 7) % 7; // Cela garantit un indice positif entre 0 et 6
 
         const jourActuel = jours[jourIndex];
 
@@ -99,6 +100,32 @@ let jours = [];
     })
     .catch(error => console.error('Erreur:', error));
 
+/// Fonction pour récupérer les horaires et les insérer dans la page
+fetch('http://localhost:3001/getSeanceData')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erreur lors de la récupération des horaires.');
+        }
+        return response.json();
+    })
+    .then(data => {
+        const tableBody = document.querySelector('table tbody'); // Récupère le corps du tableau
+
+        data.forEach(row => {
+            const tr = document.createElement('tr'); // Crée une ligne de tableau
+            for (let i = 0; i < 7; i++) { // Parcourt les colonnes pour 7 jours
+                const td = document.createElement('td'); // Crée une cellule
+                if (i === row.id_jour - 1) { // Vérifie si la colonne correspond à l'id_jour
+                    td.textContent = row.horaire;
+                }
+                tr.appendChild(td); // Ajoute la cellule à la ligne
+            }
+            tableBody.appendChild(tr); // Ajoute la ligne au tableau
+        });
+    })
+    .catch(error => {
+        console.error('Erreur :', error);
+    });
 
 
 

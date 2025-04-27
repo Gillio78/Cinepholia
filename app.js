@@ -106,7 +106,26 @@ app.get('/joursSemaineAbreges', (req, res) => {
     });
 });
 
-
+// Route pour récupérer les horaires
+app.get('/getSeanceData', (req, res) => {
+    const query = `
+        SELECT id_jour, horaire
+        FROM seances
+        WHERE id_seance IN (
+            SELECT id_seance
+            FROM films_projetes
+            WHERE id_cinema = 2 AND id_film = 2
+        );
+    `;
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Erreur dans /getSeanceData :', err);
+            res.status(500).send('Erreur lors de la récupération des données.');
+            return;
+        }
+        res.json(results); // Renvoie les résultats au front-end
+    });
+});
 
 // Démarre le serveur
 app.listen(port, () => {
