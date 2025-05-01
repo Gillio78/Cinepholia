@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cinephoria</title>
+    <title>Cinephoria - Choix du film</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -22,18 +22,24 @@
     </header>
     <main>
         <h1>Réservation</h1>
+
         <h2>Choix du cinéma :</h2>
         <form>
             <select id="cinema">
+                <option value="">Sélectionnez un cinéma</option>
             </select>
         </form><br><br>
+
         <h2>Choix du film :</h2>
         <form>
             <select id="film">
+                <option value="">Sélectionnez un film</option>
             </select>
         </form><br><br>
-        <button id="validation">Valider le choix du film</button><br><br>
+
+        <button id="validation" disabled>Valider le choix du film</button><br><br>
     </main>
+
     <footer>
         <p> Adresse : 10, Impasse de l'écran noir 75009 Paris</p>
         <p>Téléphone : 06.xx.xx.xx.09</p>
@@ -41,66 +47,75 @@
     </footer>
 
     <script>
-       fetch('/getCinemas')
-    .then(response => response.json())
-    .then(cinemas => {
-        const dropdown = document.getElementById('cinema'); // ID du menu déroulant
-        cinemas.forEach(cinema => {
-            const option = document.createElement('option');
-            option.textContent = cinema.nom_cinema; // Affiche uniquement le nom du cinéma
-            dropdown.appendChild(option);
+        // Déclaration globale des variables
+        let selectedCinema = null;
+        let selectedFilm = null;
+
+        // Récupération des cinémas
+        fetch('/getCinemas')
+            .then(response => response.json())
+            .then(cinemas => {
+                const dropdown = document.getElementById('cinema');
+                cinemas.forEach(cinema => {
+                    const option = document.createElement('option');
+                    option.value = cinema.nom_cinema; // Utilisation du nom du cinéma
+                    option.textContent = cinema.nom_cinema;
+                    dropdown.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Erreur lors de la récupération des cinémas :', error));
+
+        // Écoute du changement de sélection du cinéma
+        document.getElementById('cinema').addEventListener('change', (event) => {
+            selectedCinema = event.target.value;
+            console.log(`Cinéma sélectionné : ${selectedCinema}`);
+
+            // Requête pour récupérer les films associés
+            fetch(`/getFilmsByCinema?cinema=${encodeURIComponent(selectedCinema)}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Erreur HTTP : ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(films => {
+                    console.log(`Films récupérés pour le cinéma ${selectedCinema} :`, films);
+                    const filmDropdown = document.getElementById('film');
+                    filmDropdown.innerHTML = '<option value="">Sélectionnez un film</option>'; // Réinitialisation
+
+                    films.forEach(film => {
+                        const option = document.createElement('option');
+                        option.value = film.titre;
+                        option.textContent = film.titre;
+                        filmDropdown.appendChild(option);
+                    });
+
+                    // Active le bouton de validation uniquement si un cinéma est sélectionné
+                    document.getElementById('validation').disabled = false;
+                })
+                .catch(error => console.error('Erreur lors de la récupération des films :', error));
         });
 
-       
-    })
-    .catch(error => console.error('Erreur lors de la récupération des cinémas :', error));
+        // Gestion du bouton de validation
+        document.getElementById('validation').addEventListener('click', () => {
+            selectedFilm = document.getElementById('film').value;
 
-    //Récupère le clic du cinéma
-    document.getElementById('cinema').addEventListener('click', (event) => {
-    const selectedCinema = event.target.value; // Récupère le cinéma sélectionné
-    console.log(`Cinéma sélectionné : ${selectedCinema}`); // Vérifie la valeur dans la console
-
-    // Requête pour récupérer les films du cinéma sélectionné
-    fetch(`/getFilmsByCinema?cinema=${encodeURIComponent(selectedCinema)}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`Erreur HTTP : ${response.status}`);
+            if (!selectedCinema) {
+                alert('Veuillez sélectionner un cinéma.');
+                return;
             }
-            return response.json();
-        })
-        .then(films => {
-            console.log(`Films récupérés pour le cinéma ${selectedCinema} :`, films);
-            const filmDropdown = document.getElementById('film');
-            filmDropdown.innerHTML = ''; // Vide le menu déroulant avant de le remplir
-            films.forEach(film => {
-                const option = document.createElement('option');
-                option.value = film.titre;
-                option.textContent = film.titre; // Affiche le titre dans le menu déroulant
-                filmDropdown.appendChild(option);
-            });
-        })
-        .catch(error => console.error('Erreur lors de la récupération des films :', error));
-});
 
-//Click sur le bouton validatiion
-
-document.getElementById('validation').addEventListener('click', () => {
-            const selectedFilm = document.getElementById('film').value;
-            if (selectedFilm) {
-        // Inclut le film sélectionné dans l'URL
-        window.location.href = `choix_seance.html?film=${encodeURIComponent(selectedFilm)}`;
-    }  else {
+            if (!selectedFilm) {
                 alert('Veuillez sélectionner un film.');
+                return;
             }
+
+            // Affichage des valeurs avant la redirection
+            //alert(`Cinéma : ${selectedCinema}, Film : ${selectedFilm}`);
+
+            // Redirection avec les paramètres corrects
+            window.location.href = `choix_seance.html?cinema=${encodeURIComponent(selectedCinema)}&film=${encodeURIComponent(selectedFilm)}`;
         });
-
-
-
-
-    
     </script>
-    
 </body>
 </html>
-
-

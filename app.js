@@ -114,7 +114,7 @@ app.get('/getSeanceData', (req, res) => {
         WHERE id_seance IN (
             SELECT id_seance
             FROM films_projetes
-            WHERE id_cinema = 2 AND id_film = 2
+            WHERE id_cinema = ? AND id_film = ?
         );
     `;
     db.query(query, (err, results) => {
@@ -127,7 +127,44 @@ app.get('/getSeanceData', (req, res) => {
     });
 });
 
+/*app.get('/getSeanceData', (req, res) => {
+    const cinema = req.query.cinema;
+    const film = req.query.film;
+
+    // Vérifier que les paramètres existent
+    if (!cinema || !film) {
+        console.error('Erreur : Cinéma ou film manquant.');
+        res.status(400).send('Les paramètres cinéma et film sont obligatoires.');
+        return;
+    }
+
+    console.log(`Requête reçue : cinéma = ${cinema}, film = ${film}`);
+
+    const query = `
+        SELECT id_jour, horaire
+        FROM seances
+        WHERE id_seance IN (
+            SELECT id_seance
+            FROM films_projetes
+            WHERE id_cinema = (SELECT id_cinema FROM cinema WHERE nom_cinema = ?)
+            AND id_film = (SELECT id_film FROM film WHERE titre = ?)
+        );
+    `;
+
+    db.query(query, [cinema, film], (err, results) => {
+        if (err) {
+            console.error('Erreur dans /getSeanceData :', err);
+            res.status(500).send('Erreur serveur lors de la récupération des séances.');
+            return;
+        }
+        console.log('Horaires récupérés :', results);
+        res.json(results);
+    });
+});*/
+
 // Démarre le serveur
 app.listen(port, () => {
     console.log(`Serveur démarré sur http://localhost:${port}`);
 });
+
+

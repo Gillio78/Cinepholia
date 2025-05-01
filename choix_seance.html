@@ -51,11 +51,13 @@
 
         // Récupérez les paramètres de l'URL
 const urlParams = new URLSearchParams(window.location.search);
+const selectedCinema = urlParams.get('cinema');
 const selectedFilm = urlParams.get('film');
 
 if (selectedFilm) {
     // Créez un message avec le film sélectionné
-    const message = `Veuillez sélectionner la séance pour le film ${selectedFilm}.`;
+    const message = `Veuillez sélectionner la séance pour le film ${selectedFilm} et le cinéma ${selectedCinema}.`;
+
     document.getElementById('messageSeance').textContent = message;
 } else {
     document.getElementById('messageSeance').textContent = 'Aucun film sélectionné.';
@@ -101,7 +103,7 @@ let jours = [];
     .catch(error => console.error('Erreur:', error));
 
 /// Fonction pour récupérer les horaires et les insérer dans la page
-fetch('http://localhost:3001/getSeanceData')
+/*fetch('http://localhost:3001/getSeanceData')
     .then(response => {
         if (!response.ok) {
             throw new Error('Erreur lors de la récupération des horaires.');
@@ -125,7 +127,34 @@ fetch('http://localhost:3001/getSeanceData')
     })
     .catch(error => {
         console.error('Erreur :', error);
-    });
+    });*/
+
+    /*fetch(`http://localhost:3001/getSeanceData?cinema=${encodeURIComponent(selectedCinema)}&film=${encodeURIComponent(selectedFilm)}`)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erreur lors de la récupération des horaires.');
+        }
+        return response.json();
+    })
+    .then(data => {
+        const tableBody = document.querySelector('table tbody'); // Récupère le corps du tableau
+
+        data.forEach(row => {
+            const tr = document.createElement('tr'); // Crée une ligne de tableau
+            for (let i = 0; i < 7; i++) { // Parcourt les colonnes pour 7 jours
+                const td = document.createElement('td'); // Crée une cellule
+                if (i === row.id_jour - 1) { // Vérifie si la colonne correspond à l'id_jour
+                    td.textContent = row.horaire;
+                }
+                tr.appendChild(td); // Ajoute la cellule à la ligne
+            }
+            tableBody.appendChild(tr); // Ajoute la ligne au tableau
+        });
+    })
+    .catch(error => {
+        console.error('Erreur :', error);
+    });*/
+
 
 
 
