@@ -68,7 +68,7 @@ app.get('/getFilmsByCinema', (req, res) => {
     const query = `
         SELECT DISTINCT film.titre 
         FROM film
-        WHERE id_film=(
+        WHERE id_film IN(
         SELECT id_film
         FROM films_projetes
         WHERE id_cinema=(
