@@ -102,8 +102,39 @@ let jours = [];
     })
     .catch(error => console.error('Erreur:', error));
 
-// Fonction pour récupérer les horaires et les insérer dans la page
-/*fetch('http://localhost:3001/getSeanceData')
+// Fonction pour récupérer les horaires, le format de diffusion et les insérer dans la page
+fetch(`http://localhost:3001/getSeanceData?cinema=${encodeURIComponent(selectedCinema)}&film=${encodeURIComponent(selectedFilm)}`)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erreur lors de la récupération des séances.');
+        }
+        return response.json();
+    })
+    .then(data => {
+        const tableBody = document.querySelector('table tbody'); // Récupère le corps du tableau
+
+        data.forEach(row => {
+            const tr = document.createElement('tr'); // Crée une ligne de tableau
+
+            for (let i = 0; i < 7; i++) { // Parcourt les colonnes pour 7 jours
+                const td = document.createElement('td'); // Crée une cellule
+                
+                if (i === row.id_jour - 1) { // Vérifie si la colonne correspond à l'id_jour
+                    td.textContent = `${row.horaire} ${row.format}`; // Affiche horaire + format
+                }
+
+                tr.appendChild(td); // Ajoute la cellule à la ligne
+            }
+
+            tableBody.appendChild(tr); // Ajoute la ligne au tableau
+        });
+    })
+    .catch(error => {
+        console.error('Erreur :', error);
+    });
+
+
+    /*fetch(`http://localhost:3001/getSeanceData?cinema=${encodeURIComponent(selectedCinema)}&film=${encodeURIComponent(selectedFilm)}`)
     .then(response => {
         if (!response.ok) {
             throw new Error('Erreur lors de la récupération des horaires.');
@@ -118,7 +149,7 @@ let jours = [];
             for (let i = 0; i < 7; i++) { // Parcourt les colonnes pour 7 jours
                 const td = document.createElement('td'); // Crée une cellule
                 if (i === row.id_jour - 1) { // Vérifie si la colonne correspond à l'id_jour
-                    td.textContent = row.horaire;
+                td.textContent = `${row.horaire} (${row.format})`;;
                 }
                 tr.appendChild(td); // Ajoute la cellule à la ligne
             }
@@ -128,32 +159,6 @@ let jours = [];
     .catch(error => {
         console.error('Erreur :', error);
     });*/
-
-    fetch(`http://localhost:3001/getSeanceData?cinema=${encodeURIComponent(selectedCinema)}&film=${encodeURIComponent(selectedFilm)}`)
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Erreur lors de la récupération des horaires.');
-        }
-        return response.json();
-    })
-    .then(data => {
-        const tableBody = document.querySelector('table tbody'); // Récupère le corps du tableau
-
-        data.forEach(row => {
-            const tr = document.createElement('tr'); // Crée une ligne de tableau
-            for (let i = 0; i < 7; i++) { // Parcourt les colonnes pour 7 jours
-                const td = document.createElement('td'); // Crée une cellule
-                if (i === row.id_jour - 1) { // Vérifie si la colonne correspond à l'id_jour
-                    td.textContent = row.horaire;
-                }
-                tr.appendChild(td); // Ajoute la cellule à la ligne
-            }
-            tableBody.appendChild(tr); // Ajoute la ligne au tableau
-        });
-    })
-    .catch(error => {
-        console.error('Erreur :', error);
-    });
 
 
 

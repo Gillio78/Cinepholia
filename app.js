@@ -130,6 +130,8 @@ app.get('/joursSemaineAbreges', (req, res) => {
 app.get('/getSeanceData', (req, res) => {
     const cinema = req.query.cinema;
     const film = req.query.film;
+   
+
 
     // Vérifier que les paramètres existent
     if (!cinema || !film) {
@@ -141,7 +143,7 @@ app.get('/getSeanceData', (req, res) => {
     console.log(`Requête reçue : cinéma = ${cinema}, film = ${film}`);
 
     const query = `
-        SELECT id_jour, horaire
+        SELECT id_jour, horaire, format
         FROM seances
         WHERE id_seance IN (
             SELECT id_seance
