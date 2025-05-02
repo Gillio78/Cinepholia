@@ -107,7 +107,7 @@ app.get('/joursSemaineAbreges', (req, res) => {
 });
 
 // Route pour récupérer les horaires
-app.get('/getSeanceData', (req, res) => {
+/*app.get('/getSeanceData', (req, res) => {
     const query = `
         SELECT id_jour, horaire
         FROM seances
@@ -125,9 +125,9 @@ app.get('/getSeanceData', (req, res) => {
         }
         res.json(results); // Renvoie les résultats au front-end
     });
-});
+});*/
 
-/*app.get('/getSeanceData', (req, res) => {
+app.get('/getSeanceData', (req, res) => {
     const cinema = req.query.cinema;
     const film = req.query.film;
 
@@ -160,7 +160,7 @@ app.get('/getSeanceData', (req, res) => {
         console.log('Horaires récupérés :', results);
         res.json(results);
     });
-});*/
+});
 
 // Démarre le serveur
 app.listen(port, () => {
