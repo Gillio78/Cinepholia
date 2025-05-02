@@ -35,6 +35,12 @@
                 <!--Les horaires sont affichées ici-->
             </tbody>
         </table>
+        <div class="tarif-container">
+            <!-- Les tarifs seront insérés ici via JavaScript -->
+        </div>
+        
+        
+
       
         
 
@@ -133,32 +139,32 @@ fetch(`http://localhost:3001/getSeanceData?cinema=${encodeURIComponent(selectedC
         console.error('Erreur :', error);
     });
 
-
-    /*fetch(`http://localhost:3001/getSeanceData?cinema=${encodeURIComponent(selectedCinema)}&film=${encodeURIComponent(selectedFilm)}`)
+    fetch('http://localhost:3001/tarifs') // Requête vers l'API des tarifs
     .then(response => {
         if (!response.ok) {
-            throw new Error('Erreur lors de la récupération des horaires.');
+            throw new Error('Erreur lors de la récupération des tarifs.');
         }
         return response.json();
     })
     .then(data => {
-        const tableBody = document.querySelector('table tbody'); // Récupère le corps du tableau
+        console.log("Données des tarifs :", data); // Vérifie les données reçues
 
-        data.forEach(row => {
-            const tr = document.createElement('tr'); // Crée une ligne de tableau
-            for (let i = 0; i < 7; i++) { // Parcourt les colonnes pour 7 jours
-                const td = document.createElement('td'); // Crée une cellule
-                if (i === row.id_jour - 1) { // Vérifie si la colonne correspond à l'id_jour
-                td.textContent = `${row.horaire} (${row.format})`;;
-                }
-                tr.appendChild(td); // Ajoute la cellule à la ligne
-            }
-            tableBody.appendChild(tr); // Ajoute la ligne au tableau
+        const tarifContainer = document.querySelector('.tarif-container'); // Sélectionne le conteneur
+
+        data.forEach(tarif => {
+            const h2 = document.createElement('h2'); // Crée un élément <h2>
+            h2.classList.add('tarif'); // Ajoute la classe CSS
+            h2.textContent = `${tarif.type_place} : ${tarif.prix}€`; // Insère le texte
+            tarifContainer.appendChild(h2); // Ajoute l'élément dans le conteneur
         });
     })
     .catch(error => {
         console.error('Erreur :', error);
-    });*/
+    });
+
+
+
+
 
 
 

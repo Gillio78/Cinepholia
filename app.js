@@ -107,26 +107,6 @@ app.get('/joursSemaineAbreges', (req, res) => {
 });
 
 // Route pour récupérer les horaires
-/*app.get('/getSeanceData', (req, res) => {
-    const query = `
-        SELECT id_jour, horaire
-        FROM seances
-        WHERE id_seance IN (
-            SELECT id_seance
-            FROM films_projetes
-            WHERE id_cinema = ? AND id_film = ?
-        );
-    `;
-    db.query(query, (err, results) => {
-        if (err) {
-            console.error('Erreur dans /getSeanceData :', err);
-            res.status(500).send('Erreur lors de la récupération des données.');
-            return;
-        }
-        res.json(results); // Renvoie les résultats au front-end
-    });
-});*/
-
 app.get('/getSeanceData', (req, res) => {
     const cinema = req.query.cinema;
     const film = req.query.film;
@@ -152,8 +132,7 @@ app.get('/getSeanceData', (req, res) => {
             AND id_film = (SELECT id_film FROM film WHERE titre = ?)
         );
     `;
-
-    db.query(query, [cinema, film], (err, results) => {
+     db.query(query, [cinema, film], (err, results) => {
         if (err) {
             console.error('Erreur dans /getSeanceData :', err);
             res.status(500).send('Erreur serveur lors de la récupération des séances.');
@@ -163,6 +142,29 @@ app.get('/getSeanceData', (req, res) => {
         res.json(results);
     });
 });
+
+// Route pour récupérer les tarifs
+app.get('/tarifs', (req, res) => {
+    console.log('Requête reçue pour les tarifs.');
+
+    const query = `
+        SELECT type_place, prix 
+        FROM tarifs
+    `;
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Erreur dans la récupération des tarifs :', err);
+            res.status(500).send('Erreur serveur.');
+            return;
+        }
+
+        console.log('Résultats renvoyés :', results);
+        res.json(results); // Envoi des données JSON au frontend
+    });
+});
+
+
 
 // Démarre le serveur
 app.listen(port, () => {
