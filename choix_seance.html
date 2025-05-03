@@ -108,8 +108,7 @@ let jours = [];
     })
     .catch(error => console.error('Erreur:', error));
 
-// Fonction pour récupérer les horaires, le format de diffusion et les insérer dans la page
-fetch(`http://localhost:3001/getSeanceData?cinema=${encodeURIComponent(selectedCinema)}&film=${encodeURIComponent(selectedFilm)}`)
+    fetch(`http://localhost:3001/getSeanceData?cinema=${encodeURIComponent(selectedCinema)}&film=${encodeURIComponent(selectedFilm)}`)
     .then(response => {
         if (!response.ok) {
             throw new Error('Erreur lors de la récupération des séances.');
@@ -117,29 +116,39 @@ fetch(`http://localhost:3001/getSeanceData?cinema=${encodeURIComponent(selectedC
         return response.json();
     })
     .then(data => {
-        const tableBody = document.querySelector('table tbody'); // Récupère le corps du tableau
+        const tableBody = document.querySelector('table tbody');
+        const groupedData = {};
 
+        // Regrouper les séances par horaire et initialiser les colonnes avec des cases vides
         data.forEach(row => {
-            const tr = document.createElement('tr'); // Crée une ligne de tableau
-
-            for (let i = 0; i < 7; i++) { // Parcourt les colonnes pour 7 jours
-                const td = document.createElement('td'); // Crée une cellule
-                
-                if (i === row.id_jour - 1) { // Vérifie si la colonne correspond à l'id_jour
-                    td.textContent = `${row.horaire} ${row.format}`; // Affiche horaire + format
-                }
-
-                tr.appendChild(td); // Ajoute la cellule à la ligne
+            if (!groupedData[row.horaire]) {
+                groupedData[row.horaire] = Array(7).fill(''); // Initialiser avec des cases vides
             }
+            groupedData[row.horaire][row.id_jour - 1] = `${row.horaire} ${row.format}`; // Insérer l'horaire et le format sous le bon jour
+        });
 
-            tableBody.appendChild(tr); // Ajoute la ligne au tableau
+        // Trier les horaires en ordre croissant
+        const sortedHours = Object.keys(groupedData).sort((a, b) => a.localeCompare(b));
+
+        // Insérer les données triées dans le tableau
+        sortedHours.forEach(horaire => {
+            const tr = document.createElement('tr');
+
+            // Ajouter les horaires sous chaque colonne correspondant au jour, en laissant les cases vides si nécessaire
+            groupedData[horaire].forEach((cellContent, index) => {
+                const td = document.createElement('td');
+                td.textContent = cellContent ? cellContent : ''; // Assurer que la case reste vide si aucune séance
+                tr.appendChild(td);
+            });
+
+            tableBody.appendChild(tr);
         });
     })
     .catch(error => {
         console.error('Erreur :', error);
     });
 
-    fetch('http://localhost:3001/tarifs') // Requête vers l'API des tarifs
+fetch('http://localhost:3001/tarifs') // Requête vers l'API des tarifs
     .then(response => {
         if (!response.ok) {
             throw new Error('Erreur lors de la récupération des tarifs.');
@@ -161,6 +170,8 @@ fetch(`http://localhost:3001/getSeanceData?cinema=${encodeURIComponent(selectedC
     .catch(error => {
         console.error('Erreur :', error);
     });
+
+
 
 
 
