@@ -171,12 +171,23 @@ fetch('http://localhost:3001/tarifs') // Requête vers l'API des tarifs
         console.error('Erreur :', error);
     });
 
+//Validation du choix de la séance
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelector('table tbody').addEventListener('click', function (event) {
+        if (event.target.tagName === "TD" && event.target.textContent.trim() !== "") {
+            const selectedHoraire = event.target.textContent.trim();
+            const jourIndex = event.target.cellIndex; // Index de la colonne cliquée
 
+            // Tableau des jours où l'index 1 correspond à mardi
+            const jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
 
+            const jourSelectionne = jours[jourIndex - 1] || "Jour inconnu"; // Ajuster l'index (-1 car tableau commence à 0)
 
-
-
-
+            const message = `Vous avez choisi la séance du ${jourSelectionne} à ${selectedHoraire}.`;
+            alert(message); // Affiche une boîte de dialogue avec le message
+        }
+    });
+});
 
 
 
