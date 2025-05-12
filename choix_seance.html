@@ -23,7 +23,7 @@
     <main>
         <h1>Réservation de la séance :</h1><br><br>
         <p id="messageSeance"></p><br><br>
-        <p>Choisissez la séance :</p><br><br>
+        <p>Choisissez la séance en cliquant dessus:</p><br><br>
         <p id="jourSemaine"></p>
         <table>
             <thead>
@@ -35,9 +35,10 @@
                 <!--Les horaires sont affichées ici-->
             </tbody>
         </table>
-        <div class="tarif-container">
-            <!-- Les tarifs seront insérés ici via JavaScript -->
-        </div>
+        <!-- Conteneur pour afficher les tarifs avec les sélecteurs de quantité -->
+    <div class="tarif-container">
+      <!-- Les tarifs seront insérés ici via JavaScript -->
+    </div>
         
         
 
@@ -148,6 +149,7 @@ let jours = [];
         console.error('Erreur :', error);
     });
 
+    //Affichage de la totalité des tarifs
 fetch('http://localhost:3001/tarifs') // Requête vers l'API des tarifs
     .then(response => {
         if (!response.ok) {
@@ -189,6 +191,281 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+
+
+  //Affichage des tarifs et quntité de places
+document.addEventListener('DOMContentLoaded', function () {
+    const tableBody = document.querySelector('table tbody');
+    const tarifContainer = document.querySelector('.tarif-container');
+    let seanceSelectionnee = false; // Indicateur pour savoir si une séance est choisie
+
+    // Événement de sélection d'une séance
+    tableBody.addEventListener('click', function (event) {
+        if (event.target.tagName === "TD" && event.target.textContent.trim() !== "") {
+            seanceSelectionnee = true; // La séance est maintenant sélectionnée
+            const selectedHoraire = event.target.textContent.trim();
+            const jourIndex = event.target.cellIndex;
+
+            const jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
+            const jourSelectionne = jours[jourIndex - 1] || "Jour inconnu";
+
+            const message = `Vous avez choisi la séance du ${jourSelectionne} à ${selectedHoraire}.`;
+            alert(message); // Affiche un message de confirmation
+
+            // Activer les boutons de quantité une fois la séance sélectionnée
+            document.querySelectorAll('.btn-quantite').forEach(btn => btn.disabled = false);
+        }
+    });
+
+    // Récupération et affichage des tarifs avec sélecteurs de quantité
+    fetch('http://localhost:3001/tarifs')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erreur lors de la récupération des tarifs.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            tarifContainer.innerHTML = ""; // Nettoyage du conteneur avant ajout
+
+            data.forEach(tarif => {
+                const tarifBlock = document.createElement('div');
+                tarifBlock.classList.add('tarif-block');
+
+                const spanType = document.createElement('span');
+                spanType.classList.add('tarif-type');
+                spanType.textContent = `${tarif.type_place} - ${tarif.prix}€`;
+
+                const btnMoins = document.createElement('button');
+                btnMoins.textContent = "-";
+                btnMoins.classList.add('btn-quantite');
+                btnMoins.disabled = true; // Désactivé au départ
+
+                const spanQuantite = document.createElement('span');
+                spanQuantite.classList.add('quantite-number');
+                spanQuantite.textContent = " 0 ";
+
+                const btnPlus = document.createElement('button');
+                btnPlus.textContent = "+";
+                btnPlus.classList.add('btn-quantite');
+                btnPlus.disabled = true; // Désactivé au départ
+
+                // Ajout des événements avec **vérification immédiate**
+                btnMoins.addEventListener('click', () => {
+                    if (!seanceSelectionnee) {
+                        alert("Veuillez choisir une séance avant de modifier la quantité.");
+                        return;
+                    }
+                    let current = parseInt(spanQuantite.textContent.trim());
+                    if (current > 0) {
+                        spanQuantite.textContent = ` ${current - 1} `;
+                    }
+                });
+
+                btnPlus.addEventListener('click', () => {
+                    if (!seanceSelectionnee) {
+                        alert("Veuillez choisir une séance avant de modifier la quantité.");
+                        return;
+                    }
+                    let current = parseInt(spanQuantite.textContent.trim());
+                    spanQuantite.textContent = ` ${current + 1} `;
+                });
+
+                tarifBlock.appendChild(spanType);
+                tarifBlock.appendChild(btnMoins);
+                tarifBlock.appendChild(spanQuantite);
+                tarifBlock.appendChild(btnPlus);
+                tarifContainer.appendChild(tarifBlock);
+            });
+        })
+        .catch(error => console.error('Erreur :', error));
+});
+
+
+/*document.addEventListener('DOMContentLoaded', function () {
+    const tableBody = document.querySelector('table tbody');
+    const tarifContainer = document.querySelector('.tarif-container');
+    let seanceSelectionnee = false; // Indicateur pour savoir si une séance est choisie
+
+    // Événement de sélection d'une séance
+    tableBody.addEventListener('click', function (event) {
+        if (event.target.tagName === "TD" && event.target.textContent.trim() !== "") {
+            seanceSelectionnee = true; // La séance est maintenant sélectionnée
+            const selectedHoraire = event.target.textContent.trim();
+            const jourIndex = event.target.cellIndex;
+
+            const jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
+            const jourSelectionne = jours[jourIndex - 1] || "Jour inconnu";
+
+            const message = `Vous avez choisi la séance du ${jourSelectionne} à ${selectedHoraire}.`;
+            alert(message); // Affiche un message de confirmation
+
+            // Activer les boutons de quantité une fois la séance sélectionnée
+            document.querySelectorAll('.btn-quantite').forEach(btn => btn.disabled = false);
+        }
+    });
+
+    // Récupération et affichage des tarifs avec sélecteurs de quantité
+    fetch('http://localhost:3001/tarifs')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erreur lors de la récupération des tarifs.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            tarifContainer.innerHTML = ""; // Nettoyage du conteneur avant ajout
+
+            data.forEach(tarif => {
+                const tarifBlock = document.createElement('div');
+                tarifBlock.classList.add('tarif-block');
+
+                const spanType = document.createElement('span');
+                spanType.classList.add('tarif-type');
+                spanType.textContent = `${tarif.type_place} - ${tarif.prix}€`;
+
+                const btnMoins = document.createElement('button');
+                btnMoins.textContent = "-";
+                btnMoins.classList.add('btn-quantite');
+                btnMoins.disabled = true; // Désactivé au départ
+
+                const spanQuantite = document.createElement('span');
+                spanQuantite.classList.add('quantite-number');
+                spanQuantite.textContent = " 0 ";
+
+                const btnPlus = document.createElement('button');
+                btnPlus.textContent = "+";
+                btnPlus.classList.add('btn-quantite');
+                btnPlus.disabled = true; // Désactivé au départ
+
+                // Ajout des événements avec **vérification immédiate**
+                btnMoins.addEventListener('click', () => {
+                    if (!seanceSelectionnee) {
+                        alert("Veuillez choisir une séance avant de modifier la quantité.");
+                        return;
+                    }
+                    let current = parseInt(spanQuantite.textContent.trim());
+                    if (current > 0) {
+                        spanQuantite.textContent = ` ${current - 1} `;
+                    }
+                });
+
+                btnPlus.addEventListener('click', () => {
+                    if (!seanceSelectionnee) {
+                        alert("Veuillez choisir une séance avant de modifier la quantité.");
+                        return;
+                    }
+                    let current = parseInt(spanQuantite.textContent.trim());
+                    spanQuantite.textContent = ` ${current + 1} `;
+                });
+
+                tarifBlock.appendChild(spanType);
+                tarifBlock.appendChild(btnMoins);
+                tarifBlock.appendChild(spanQuantite);
+                tarifBlock.appendChild(btnPlus);
+                tarifContainer.appendChild(tarifBlock);
+            });
+        })
+        .catch(error => console.error('Erreur :', error));
+});
+
+
+  /*document.addEventListener('DOMContentLoaded', function () {
+    const tableBody = document.querySelector('table tbody');
+    const tarifContainer = document.querySelector('.tarif-container');
+    let seanceSelectionnee = false; // Indicateur pour savoir si une séance est choisie
+
+    // Événement de sélection d'une séance
+    tableBody.addEventListener('click', function (event) {
+        if (event.target.tagName === "TD" && event.target.textContent.trim() !== "") {
+            seanceSelectionnee = true; // La séance est maintenant sélectionnée
+            const selectedHoraire = event.target.textContent.trim();
+            const jourIndex = event.target.cellIndex;
+
+            const jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
+            const jourSelectionne = jours[jourIndex - 1] || "Jour inconnu";
+
+            const message = `Vous avez choisi la séance du ${jourSelectionne} à ${selectedHoraire}.`;
+            alert(message); // Message de confirmation
+        }
+    });
+
+    // Récupération et affichage des tarifs avec sélecteurs de quantité
+    fetch('http://localhost:3001/tarifs')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erreur lors de la récupération des tarifs.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            tarifContainer.innerHTML = ""; // Nettoyage du conteneur avant ajout
+
+            data.forEach(tarif => {
+                const tarifBlock = document.createElement('div');
+                tarifBlock.classList.add('tarif-block');
+
+                const spanType = document.createElement('span');
+                spanType.classList.add('tarif-type');
+                spanType.textContent = `${tarif.type_place} - ${tarif.prix}€`;
+
+                const btnMoins = document.createElement('button');
+                btnMoins.textContent = "-";
+                btnMoins.classList.add('btn-quantite');
+                btnMoins.disabled = true; // Désactivé au départ
+
+                const spanQuantite = document.createElement('span');
+                spanQuantite.classList.add('quantite-number');
+                spanQuantite.textContent = " 0 ";
+
+                const btnPlus = document.createElement('button');
+                btnPlus.textContent = "+";
+                btnPlus.classList.add('btn-quantite');
+                btnPlus.disabled = true; // Désactivé au départ
+
+                // Ajout des événements avec vérification
+                btnMoins.addEventListener('click', () => {
+                    if (!seanceSelectionnee) {
+                        alert("Veuillez choisir une séance avant de modifier la quantité.");
+                        return;
+                    }
+                    let current = parseInt(spanQuantite.textContent.trim());
+                    if (current > 0) {
+                        spanQuantite.textContent = ` ${current - 1} `;
+                    }
+                });
+
+                btnPlus.addEventListener('click', () => {
+                    if (!seanceSelectionnee) {
+                        alert("Veuillez choisir une séance avant de modifier la quantité.");
+                        return;
+                    }
+                    let current = parseInt(spanQuantite.textContent.trim());
+                    spanQuantite.textContent = ` ${current + 1} `;
+                });
+
+                tarifBlock.appendChild(spanType);
+                tarifBlock.appendChild(btnMoins);
+                tarifBlock.appendChild(spanQuantite);
+                tarifBlock.appendChild(btnPlus);
+                tarifContainer.appendChild(tarifBlock);
+            });
+
+            // Une fois qu'une séance est choisie, les boutons sont activés
+            tableBody.addEventListener('click', () => {
+                if (seanceSelectionnee) {
+                    document.querySelectorAll('.btn-quantite').forEach(btn => btn.disabled = false);
+                }
+            });
+        })
+        .catch(error => console.error('Erreur :', error));
+});*/
+
+
+
+
+
+    
 
 
 

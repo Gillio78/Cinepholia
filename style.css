@@ -64,3 +64,56 @@ th {
     background-color: #ffeb3b; /* Mettre en avant le jour actuel */
     font-weight: bold;
 }
+
+/*bordures au tableau*/
+table {
+    width: 100%;
+    border-collapse: collapse; 
+}
+
+table, th, td {
+    border: 2px solid black; 
+}
+
+th, td {
+    padding: 10px;
+    text-align: center;
+}
+
+
+.tarif-block {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px; /* Sépare chaque bloc par une marge pour l'affichage vertical */
+}
+
+/* Style du type de place + prix */
+.tarif-type {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* Style des boutons du sélecteur */
+.btn-quantite {
+  width: 30px;
+  height: 30px;
+  font-size: 18px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+
+.btn-quantite:hover {
+  background-color: #0056b3;
+}
+
+/* Style pour le nombre affiché */
+.quantite-number {
+  min-width: 30px;
+  text-align: center;
+}
+
+
